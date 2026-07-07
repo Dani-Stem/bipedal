@@ -19,7 +19,6 @@ unsigned long debounceDelay = 200;
 unsigned long lastSerialTime = 0;
 unsigned long serialInterval = 500;
 
-
 void setup() {
 
   Serial.begin(9600); 
@@ -46,33 +45,36 @@ void loop() {
     x_axis = analogRead(x_axis_pin);  
 
     if (buttonState == LOW && (millis() - lastButtonPressTime > debounceDelay)) {
-    if (sel_state != 1){
+    if (sel_state != 2){
     sel_state = sel_state + 1; 
+    Serial.println("select state +1"); 
   }
     else{
     sel_state = 0;
+    Serial.println("select state 0"); 
   }
     lastButtonPressTime = millis();
   }
     if (millis() - lastSerialTime > serialInterval) {
    
-    Serial.print("Select:");
-    Serial.print(sel_state);   
-    Serial.print(" x:" );  
-    Serial.print(x_axis); 
-    Serial.print(" y:" ); 
-    Serial.println(y_axis); 
-    delay(100);
+    // Serial.print("Select:");
+    // Serial.print(sel_state);   
+    // Serial.print(" x:" );  
+    // Serial.print(x_axis); 
+    // Serial.print(" y:" ); 
+    // Serial.println(y_axis); 
+    // delay(100);
     
     // Reset the serial timer
     lastSerialTime = millis();
   }
 
- 
-
-
+//setting to 0
   if (x_axis < 100 && sel_state == 1){
     pos_left = 0;
+    //rfmin
+    Serial.println("1"); 
+
   }
   else{
     pos_left = 75;
@@ -80,9 +82,74 @@ void loop() {
 
   if (x_axis < 100 && sel_state == 0){
     pos_right = 0;
+    //ltmin
+    Serial.println("2"); 
   }
   else{
     pos_right = 75;
   }
+
+  if (y_axis < 100 && sel_state == 1){
+    pos_left = 0;
+    //rtmin
+    Serial.println("3"); 
+  }
+  else{
+    pos_left = 75;
+  }
+
+  if (y_axis < 100 && sel_state == 0){
+    pos_right = 0;
+    //lfmin
+    Serial.println("4"); 
+  }
+  else{
+    pos_right = 75;
+  }
+
+
+//setting to max
+  if (x_axis > 500 && sel_state == 1){
+    pos_left = 180;
+    //rtmax
+    Serial.println("5"); 
+
+  }
+  else{
+    pos_left = 75;
+  }
+
+  if (x_axis > 500 && sel_state == 0){
+    pos_right = 180;
+    //ltmax
+    Serial.println("6"); 
+  }
+  else{
+    pos_right = 75;
+  }
+
+  if (y_axis > 500 && sel_state == 1){
+    pos_left = 180;
+    //rfmax
+    Serial.println("7"); 
+  }
+  else{
+    pos_left = 75;
+  }
+
+  if (y_axis > 500 && sel_state == 0){
+    pos_right = 180;
+    //lfmax
+    Serial.println("8"); 
+  }
+  else{
+    pos_right = 75;
+  }
+
+  if (sel_state == 2){
+    //dance
+    Serial.println("9");
+  }
+
   }
 
