@@ -7,7 +7,7 @@ class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Arduino Serial Image Viewer")
-        self.root.geometry("400x400")
+        self.root.geometry("800x1000")
 
         # 1. Initialize Serial Connection (Change 'COM3' or '/dev/ttyUSB0' to match your port)
         try:
@@ -18,7 +18,13 @@ class App:
 
         # 2. Setup Images
         self.default_img = ImageTk.PhotoImage(Image.new('RGB', (300, 300), color = 'gray'))
-        
+
+        self.image_paths = [
+            "1.png",
+            "2.png",
+            "3.png"
+        ]
+
         # 3. Setup Tkinter Label to display the image
         self.image_label = tk.Label(root, image=self.default_img)
         self.image_label.pack(pady=20)
@@ -33,6 +39,9 @@ class App:
             # Start polling the GUI queue for image updates
             self.root.after(100, self.update_gui)
 
+        self.frames = [ImageTk.PhotoImage(Image.open(path)) for path in self.image_paths]
+        self.frame_index = 0
+
     def read_serial(self):
         """Continuously reads data from Arduino."""
         while self.running:
@@ -43,6 +52,7 @@ class App:
     def process_serial_data(self, data):
         """Determine which image to load based on serial data."""
         # Example: If Arduino sends "state_1", open "image1.png"
+
         if data == "1":
             self.load_new_image("1.png")
         elif data == '2':
@@ -60,17 +70,22 @@ class App:
         elif data == '8':
             self.load_new_image("8.png")
         elif data == '9':
-            self.load_new_image("1.png")
-            self.load_new_image("2.png")
-            self.load_new_image("3.png")
-            self.load_new_image("4.png")
-            self.load_new_image("5.png")
-            self.load_new_image("6.png")
-            self.load_new_image("7.png")
-            self.load_new_image("8.png")
-            self.load_new_image("9.png")
-            
-
+            self.animate()
+        elif data == '10':
+            self.load_new_image("10.png")
+        elif data == '11':
+            self.load_new_image("11.png")
+        
+    def animate(self):
+        # Update the label with the current frame
+        self.image_label.config(image=self.frames[self.frame_index])
+        
+        # Move to the next frame, loop back to 0 if at the end
+        self.frame_index = (self.frame_index + 1) % len(self.frames)
+        
+        # Call this method again after 100 milliseconds (10 FPS)
+        self.root.after(100, self.animate)    
+        
     def load_new_image(self, image_path):
         """Safely loads and stores a reference to the new PNG."""
         try:
