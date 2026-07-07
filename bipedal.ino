@@ -45,16 +45,22 @@ void loop() {
     x_axis = analogRead(x_axis_pin);  
 
     if (buttonState == LOW && (millis() - lastButtonPressTime > debounceDelay)) {
-    if (sel_state != 2){
+    if (sel_state != 3){
     sel_state = sel_state + 1; 
-    Serial.println("select state +1"); 
+    Serial.println("10"); 
   }
     else{
     sel_state = 0;
-    Serial.println("select state 0"); 
+    Serial.println("11"); 
   }
+
     lastButtonPressTime = millis();
   }
+  if (sel_state == 3){
+    //dance
+    Serial.println("9");
+  }
+
     if (millis() - lastSerialTime > serialInterval) {
    
     // Serial.print("Select:");
@@ -69,26 +75,23 @@ void loop() {
     lastSerialTime = millis();
   }
 
-//setting to 0
+  //setting to min
   if (x_axis < 100 && sel_state == 1){
     pos_left = 0;
     //rfmin
     Serial.println("1"); 
-
   }
   else{
-    pos_left = 75;
+    pos_right = 75;
   }
-
   if (x_axis < 100 && sel_state == 0){
     pos_right = 0;
     //ltmin
     Serial.println("2"); 
   }
   else{
-    pos_right = 75;
+    pos_left = 75;
   }
-
   if (y_axis < 100 && sel_state == 1){
     pos_left = 0;
     //rtmin
@@ -97,28 +100,23 @@ void loop() {
   else{
     pos_left = 75;
   }
-
   if (y_axis < 100 && sel_state == 0){
     pos_right = 0;
     //lfmin
     Serial.println("4"); 
   }
   else{
-    pos_right = 75;
-  }
-
-
-//setting to max
-  if (x_axis > 500 && sel_state == 1){
-    pos_left = 180;
-    //rtmax
-    Serial.println("5"); 
-
-  }
-  else{
     pos_left = 75;
   }
-
+  //setting to max
+  if (x_axis > 500 && sel_state == 1){
+    pos_right = 180;
+    //rtmax
+    Serial.println("5"); 
+  }
+  else{
+    pos_right = 75;
+  }
   if (x_axis > 500 && sel_state == 0){
     pos_right = 180;
     //ltmax
@@ -127,7 +125,6 @@ void loop() {
   else{
     pos_right = 75;
   }
-
   if (y_axis > 500 && sel_state == 1){
     pos_left = 180;
     //rfmax
@@ -136,19 +133,13 @@ void loop() {
   else{
     pos_left = 75;
   }
-
   if (y_axis > 500 && sel_state == 0){
-    pos_right = 180;
+    pos_left = 180;
     //lfmax
     Serial.println("8"); 
   }
   else{
-    pos_right = 75;
-  }
-
-  if (sel_state == 2){
-    //dance
-    Serial.println("9");
+    pos_left = 75;
   }
 
   }
